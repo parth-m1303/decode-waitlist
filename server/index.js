@@ -37,6 +37,10 @@ if (!SESSION_SECRET) {
 }
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
+// Trust the first proxy (e.g., Render, Railway, Vercel) so that secure cookies 
+// can be set even when the proxy terminates HTTPS and forwards as HTTP.
+app.set('trust proxy', 1);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
