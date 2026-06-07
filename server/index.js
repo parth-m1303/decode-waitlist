@@ -18,6 +18,17 @@ const PORT = 3001;
 // Require ADMIN_PASSWORD to be set via environment variable.
 // Fail fast at startup with a clear message rather than silently using a
 // hardcoded default that could be forgotten in production.
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+if (!ADMIN_PASSWORD) {
+  console.error('\n❌  ADMIN_PASSWORD environment variable is not set.');
+  console.error('   Copy .env.example to .env and set a secure password:');
+  console.error('   cp .env.example .env');
+  console.error('   Then edit .env and set:  ADMIN_PASSWORD=your-password-here\n');
+  console.error('   Or run the server with the variable inline:');
+  console.error('   ADMIN_PASSWORD=your-password npm run server\n');
+  process.exit(1);
+}
+
 const SESSION_SECRET = process.env.SESSION_SECRET;
 if (!SESSION_SECRET) {
   console.warn('\n⚠️  SESSION_SECRET environment variable is not set.');
