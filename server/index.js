@@ -195,8 +195,7 @@ app.get('/admin', requireAuth, (req, res) => {
   res.send(adminPageHTML(stats, entries));
 });
 
-// ─── Root redirect ────────────────────────────────────────────────────────────
-app.get('/', (req, res) => res.redirect('/admin'));
+// Root redirect removed to allow express.static to serve the React app at '/'
 
 // ─── Serve Static Frontend ───────────────────────────────────────────────────
 import path from 'path';
