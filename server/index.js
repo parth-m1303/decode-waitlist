@@ -78,7 +78,7 @@ const VALID_DEVICE_TYPES = [
 ];
 
 const VALID_USE_CASES = [
-  'Student Learning Programming',
+  'Student Learning',
   'DSA / Competitive Programming',
   'Web Development',
   'Mobile Development',

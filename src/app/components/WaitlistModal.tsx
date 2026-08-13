@@ -24,7 +24,7 @@ interface FormErrors {
 }
 
 const USE_CASES = [
-  'Student Learning Programming',
+  'Student Learning',
   'DSA / Competitive Programming',
   'Web Development',
   'Mobile Development',
