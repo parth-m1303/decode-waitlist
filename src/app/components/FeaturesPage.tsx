@@ -62,18 +62,24 @@ function FeatureMedia({ alt }: { alt: string }) {
 
 function FeaturesHero() {
   return (
-    <section className="pt-28 pb-16 px-6 sm:px-8">
+    <section className="pt-24 pb-10 px-6 sm:px-8">
       <div className="max-w-7xl mx-auto max-w-3xl">
-        <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-          className="text-xs font-semibold uppercase tracking-[0.15em] mb-6" style={{ color: 'var(--decode-orange)' }}>
-          Features
-        </motion.p>
-        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
-          className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-[-0.035em] leading-[1.05] mb-8" style={{ color: 'var(--decode-text)' }}>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+          className="flex items-center gap-3 mb-5">
+          <div className="w-[3px] h-5 rounded-full" style={{ background: 'var(--decode-orange)' }} />
+          <p
+            className="text-lg sm:text-xl font-semibold uppercase tracking-[0.06em]"
+            style={{ color: 'var(--decode-orange)' }}
+          >
+            Features
+          </p>
+        </motion.div>
+        <motion.h1 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
+          className="text-4xl sm:text-5xl md:text-[3.75rem] font-bold tracking-[-0.03em] leading-[1.08] mb-6 max-w-2xl" style={{ color: 'var(--decode-text)' }}>
           Understand code in context.
         </motion.h1>
-        <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.25 }}
-          className="text-lg sm:text-xl leading-relaxed max-w-xl" style={{ color: 'var(--decode-text-muted)' }}>
+        <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.25 }}
+          className="text-base sm:text-lg leading-relaxed max-w-[38rem]" style={{ color: 'var(--decode-text-muted)' }}>
           Decode gives you multiple ways to understand unfamiliar software — from a single selection to the project around it.
         </motion.p>
       </div>

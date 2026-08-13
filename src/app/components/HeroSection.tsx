@@ -60,7 +60,7 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.25rem] font-bold tracking-[-0.035em] leading-[1.05] mb-6"
+            className="text-4xl sm:text-5xl md:text-[3.75rem] font-bold tracking-[-0.03em] leading-[1.08] mb-6"
             style={{ color: 'var(--decode-text)' }}
           >
             Understand code in context.
