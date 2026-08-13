@@ -18,8 +18,6 @@ db.exec(`
     name             TEXT    NOT NULL,
     email            TEXT    NOT NULL UNIQUE,
     device_type      TEXT    NOT NULL,
-    primary_use_case TEXT    NOT NULL,
-    preferred_ide    TEXT,
     created_at       TEXT    NOT NULL DEFAULT (datetime('now'))
   );
 `);
@@ -39,8 +37,8 @@ db.exec(`
 
 // ─── Prepared statements ─────────────────────────────────────────────────────
 const insertEntry = db.prepare(`
-  INSERT INTO waitlist_entries (name, email, device_type, primary_use_case, preferred_ide)
-  VALUES (@name, @email, @device_type, @primary_use_case, @preferred_ide)
+  INSERT INTO waitlist_entries (name, email, device_type)
+  VALUES (@name, @email, @device_type)
 `);
 
 const getEntryByEmail = db.prepare(`
@@ -64,12 +62,7 @@ const getStatsQuery = db.prepare(`
     COUNT(*) as total,
     SUM(CASE WHEN device_type = 'macOS (Apple Silicon)' THEN 1 ELSE 0 END) as apple_silicon,
     SUM(CASE WHEN device_type = 'macOS (Intel)'         THEN 1 ELSE 0 END) as intel_mac,
-    SUM(CASE WHEN device_type = 'Windows (Interested in future support)' THEN 1 ELSE 0 END) as windows,
-    SUM(CASE WHEN primary_use_case = 'Web Development'              THEN 1 ELSE 0 END) as web_dev,
-    SUM(CASE WHEN primary_use_case = 'Mobile Development'           THEN 1 ELSE 0 END) as mobile_dev,
-    SUM(CASE WHEN primary_use_case = 'Backend Development'          THEN 1 ELSE 0 END) as backend_dev,
-    SUM(CASE WHEN primary_use_case = 'AI / ML'                      THEN 1 ELSE 0 END) as ai_ml,
-    SUM(CASE WHEN primary_use_case = 'DSA / Competitive Programming' THEN 1 ELSE 0 END) as dsa
+    SUM(CASE WHEN device_type = 'Windows (Interested in future support)' THEN 1 ELSE 0 END) as windows
   FROM waitlist_entries
 `);
 
@@ -124,8 +117,8 @@ createBackup().catch(console.error);
  * Returns { success: true, id } or throws on duplicate/error.
  */
 export function insertWaitlistEntry(data) {
-  const { name, email, device_type, primary_use_case, preferred_ide } = data;
-  const result = insertEntry.run({ name, email, device_type, primary_use_case, preferred_ide: preferred_ide || null });
+  const { name, email, device_type } = data;
+  const result = insertEntry.run({ name, email, device_type });
   return { success: true, id: result.lastInsertRowid };
 }
 

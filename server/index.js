@@ -77,25 +77,12 @@ const VALID_DEVICE_TYPES = [
   'Windows (Interested in future support)',
 ];
 
-const VALID_USE_CASES = [
-  'Student Learning',
-  'DSA / Competitive Programming',
-  'Web Development',
-  'Mobile Development',
-  'Backend Development',
-  'AI / ML',
-  'Blockchain',
-  'Other',
-];
-
 function validateWaitlistBody(body) {
   const errors = {};
   if (!body.name || body.name.trim().length < 1) errors.name = 'Name is required.';
   if (!body.email || !EMAIL_RE.test(body.email.trim())) errors.email = 'A valid email is required.';
   if (!body.device_type || !VALID_DEVICE_TYPES.includes(body.device_type))
     errors.device_type = 'Please select a device type.';
-  if (!body.primary_use_case || !VALID_USE_CASES.includes(body.primary_use_case))
-    errors.primary_use_case = 'Please select a primary use case.';
   return errors;
 }
 
@@ -106,7 +93,7 @@ app.post('/api/waitlist', (req, res) => {
     return res.status(400).json({ success: false, errors });
   }
 
-  const { name, email, device_type, primary_use_case, preferred_ide } = req.body;
+  const { name, email, device_type } = req.body;
 
   if (emailExists(email.trim())) {
     return res.status(409).json({
@@ -120,8 +107,6 @@ app.post('/api/waitlist', (req, res) => {
       name: name.trim(),
       email: email.trim().toLowerCase(),
       device_type,
-      primary_use_case,
-      preferred_ide: preferred_ide || null,
     });
     return res.status(201).json({ success: true, id: result.id });
   } catch (err) {
@@ -173,7 +158,7 @@ app.get('/admin/api/entries', requireAuth, (req, res) => {
 // ─── Admin: CSV export ───────────────────────────────────────────────────────
 app.get('/admin/export.csv', requireAuth, (req, res) => {
   const entries = getAllWaitlistEntries();
-  const headers = ['id', 'name', 'email', 'device_type', 'primary_use_case', 'preferred_ide', 'created_at'];
+  const headers = ['id', 'name', 'email', 'device_type', 'created_at'];
   const escape = (v) => {
     if (v == null) return '';
     const s = String(v);
@@ -327,11 +312,6 @@ function adminPageHTML(stats, entries) {
     { label: 'Apple Silicon',         value: stats.apple_silicon || 0 },
     { label: 'Intel Mac',             value: stats.intel_mac    || 0 },
     { label: 'Windows Interest',      value: stats.windows      || 0 },
-    { label: 'Web Development',       value: stats.web_dev      || 0 },
-    { label: 'Mobile Development',    value: stats.mobile_dev   || 0 },
-    { label: 'Backend Development',   value: stats.backend_dev  || 0 },
-    { label: 'AI / ML',               value: stats.ai_ml        || 0 },
-    { label: 'DSA / Competitive',     value: stats.dsa          || 0 },
   ];
 
   const statsHTML = statCards
@@ -351,8 +331,6 @@ function adminPageHTML(stats, entries) {
       <td class="name-cell">${escapeHtml(e.name)}</td>
       <td class="email-cell">${escapeHtml(e.email)}</td>
       <td>${deviceBadge(e.device_type)}</td>
-      <td>${escapeHtml(e.primary_use_case)}</td>
-      <td>${escapeHtml(e.preferred_ide || '—')}</td>
       <td>${formatDate(e.created_at)}</td>
     </tr>`
     )
@@ -498,8 +476,6 @@ function adminPageHTML(stats, entries) {
             <th>Name</th>
             <th>Email</th>
             <th>Device</th>
-            <th>Primary Use Case</th>
-            <th>Preferred IDE</th>
             <th>Signed Up</th>
           </tr>
         </thead>

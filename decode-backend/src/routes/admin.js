@@ -68,7 +68,7 @@ router.get("/stats", adminAuth, async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("waitlist_users")
-      .select("device_type, primary_use_case");
+      .select("device_type");
 
     if (error) throw error;
 
@@ -76,11 +76,6 @@ router.get("/stats", adminAuth, async (req, res) => {
     const apple_silicon = data.filter(u => u.device_type === "macOS (Apple Silicon)" || u.device_type === "macos_apple_silicon").length;
     const intel_mac = data.filter(u => u.device_type === "macOS (Intel)" || u.device_type === "macos_intel").length;
     const windows = data.filter(u => u.device_type === "Windows (Interested in future support)" || u.device_type === "windows").length;
-    const web_dev = data.filter(u => u.primary_use_case === "Web Development").length;
-    const mobile_dev = data.filter(u => u.primary_use_case === "Mobile Development").length;
-    const backend_dev = data.filter(u => u.primary_use_case === "Backend Development").length;
-    const ai_ml = data.filter(u => u.primary_use_case === "AI / ML").length;
-    const dsa = data.filter(u => u.primary_use_case === "DSA / Competitive Programming").length;
 
     return res.json({
       success: true,
@@ -89,11 +84,6 @@ router.get("/stats", adminAuth, async (req, res) => {
         apple_silicon,
         intel_mac,
         windows,
-        web_dev,
-        mobile_dev,
-        backend_dev,
-        ai_ml,
-        dsa,
         max_users: 200,
         remaining_slots: Math.max(0, 200 - total),
         percentage_filled: Math.min(100, Math.round((total / 200) * 100)),
@@ -119,7 +109,7 @@ router.get("/waitlist", adminAuth, async (req, res) => {
 
     let query = supabase
       .from("waitlist_users")
-      .select("id, name, email, device_type, primary_use_case, preferred_ide, created_at")
+      .select("id, name, email, device_type, created_at")
       .order("created_at", { ascending: false });
 
     if (q) {
@@ -153,12 +143,12 @@ router.get("/export.csv", adminAuth, async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("waitlist_users")
-      .select("id, name, email, device_type, primary_use_case, preferred_ide, created_at")
+      .select("id, name, email, device_type, created_at")
       .order("created_at", { ascending: false });
 
     if (error) throw error;
 
-    const headers = ["id", "name", "email", "device_type", "primary_use_case", "preferred_ide", "created_at"];
+    const headers = ["id", "name", "email", "device_type", "created_at"];
 
     const escape = (v) => {
       if (v == null) return "";
@@ -302,11 +292,6 @@ router.get("/dashboard", async (req, res) => {
       apple_silicon: users.filter(u => u.device_type === "macOS (Apple Silicon)" || u.device_type === "macos_apple_silicon").length,
       intel_mac: users.filter(u => u.device_type === "macOS (Intel)" || u.device_type === "macos_intel").length,
       windows: users.filter(u => u.device_type === "Windows (Interested in future support)" || u.device_type === "windows").length,
-      web_dev: users.filter(u => u.primary_use_case === "Web Development").length,
-      mobile_dev: users.filter(u => u.primary_use_case === "Mobile Development").length,
-      backend_dev: users.filter(u => u.primary_use_case === "Backend Development").length,
-      ai_ml: users.filter(u => u.primary_use_case === "AI / ML").length,
-      dsa: users.filter(u => u.primary_use_case === "DSA / Competitive Programming").length,
     };
 
     res.send(adminPageHTML(stats, users));
@@ -420,11 +405,6 @@ function adminPageHTML(stats, entries) {
     { label: 'Apple Silicon',       value: stats.apple_silicon || 0 },
     { label: 'Intel Mac',           value: stats.intel_mac    || 0 },
     { label: 'Windows Interest',    value: stats.windows      || 0 },
-    { label: 'Web Development',     value: stats.web_dev      || 0 },
-    { label: 'Mobile Development',  value: stats.mobile_dev   || 0 },
-    { label: 'Backend Development', value: stats.backend_dev  || 0 },
-    { label: 'AI / ML',             value: stats.ai_ml        || 0 },
-    { label: 'DSA / Competitive',   value: stats.dsa          || 0 },
   ];
 
   const statsHTML = statCards.map(s => `
@@ -438,8 +418,6 @@ function adminPageHTML(stats, entries) {
       <td class="name-cell">${escapeHtml(e.name)}</td>
       <td class="email-cell">${escapeHtml(e.email)}</td>
       <td>${deviceBadge(e.device_type)}</td>
-      <td>${escapeHtml(e.primary_use_case || '—')}</td>
-      <td>${escapeHtml(e.preferred_ide || '—')}</td>
       <td>${formatDate(e.created_at)}</td>
     </tr>`).join('');
 
@@ -567,8 +545,6 @@ function adminPageHTML(stats, entries) {
             <th>Name</th>
             <th>Email</th>
             <th>Device</th>
-            <th>Primary Use Case</th>
-            <th>Preferred IDE</th>
             <th>Signed Up</th>
           </tr>
         </thead>

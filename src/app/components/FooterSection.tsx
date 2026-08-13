@@ -47,9 +47,9 @@ export function FooterSection({ onOpenWaitlist }: FooterSectionProps) {
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.12em] mb-5" style={{ color: 'rgba(255,255,255,0.35)' }}>Connect</p>
               <div className="flex flex-col gap-3">
-                <a href="https://github.com/decode" className="text-sm transition-colors hover:text-white" style={{ color: 'var(--decode-text-on-dark-dim)' }}>GitHub</a>
-                <a href="https://twitter.com/decode" className="text-sm transition-colors hover:text-white" style={{ color: 'var(--decode-text-on-dark-dim)' }}>X</a>
-                <a href="mailto:hello@decode.app" className="text-sm transition-colors hover:text-white" style={{ color: 'var(--decode-text-on-dark-dim)' }}>Contact</a>
+                <span className="text-sm" style={{ color: 'var(--decode-text-on-dark-dim)' }}>GitHub</span>
+                <span className="text-sm" style={{ color: 'var(--decode-text-on-dark-dim)' }}>X</span>
+                <span className="text-sm" style={{ color: 'var(--decode-text-on-dark-dim)' }}>Contact</span>
               </div>
             </div>
           </div>

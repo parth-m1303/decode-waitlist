@@ -29,17 +29,6 @@ const VALID_DEVICE_TYPES = [
   "windows",
 ];
 
-const VALID_USE_CASES = [
-  "Student Learning",
-  "DSA / Competitive Programming",
-  "Web Development",
-  "Mobile Development",
-  "Backend Development",
-  "AI / ML",
-  "Blockchain",
-  "Other",
-];
-
 
 // ==========================================
 // POST /api/waitlist — Join the waitlist
@@ -47,7 +36,7 @@ const VALID_USE_CASES = [
 
 router.post("/", waitlistLimiter, async (req, res) => {
   try {
-    let { name, email, device_type, primary_use_case, preferred_ide } = req.body;
+    let { name, email, device_type } = req.body;
 
     // -------------------------
     // Basic validation
@@ -63,8 +52,6 @@ router.post("/", waitlistLimiter, async (req, res) => {
     name = String(name).trim();
     email = String(email).trim().toLowerCase();
     device_type = String(device_type).trim();
-    primary_use_case = primary_use_case ? String(primary_use_case).trim() : null;
-    preferred_ide = preferred_ide ? String(preferred_ide).trim() : null;
 
     if (name.length < 1 || name.length > 100) {
       return res.status(400).json({
@@ -86,13 +73,6 @@ router.post("/", waitlistLimiter, async (req, res) => {
       return res.status(400).json({
         success: false,
         errors: { device_type: "Please select a device type." },
-      });
-    }
-
-    if (primary_use_case && !VALID_USE_CASES.includes(primary_use_case)) {
-      return res.status(400).json({
-        success: false,
-        errors: { primary_use_case: "Please select a primary use case." },
       });
     }
 
@@ -148,14 +128,10 @@ router.post("/", waitlistLimiter, async (req, res) => {
     // Insert user
     // -------------------------
 
-    const insertData = { name, email, device_type };
-    if (primary_use_case) insertData.primary_use_case = primary_use_case;
-    if (preferred_ide) insertData.preferred_ide = preferred_ide;
-
     const { data, error: insertError } = await supabase
       .from("waitlist_users")
-      .insert([insertData])
-      .select("id, name, email, device_type, primary_use_case, preferred_ide, created_at")
+      .insert([{ name, email, device_type }])
+      .select("id, name, email, device_type, created_at")
       .single();
 
     if (insertError) {

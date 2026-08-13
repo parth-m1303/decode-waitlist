@@ -6,8 +6,6 @@ CREATE TABLE public.waitlist_users (
   name             text        NOT NULL,
   email            text        NOT NULL,
   device_type      text        NOT NULL,
-  primary_use_case text,
-  preferred_ide    text,
   created_at       timestamptz NOT NULL DEFAULT now(),
 
   CONSTRAINT waitlist_users_email_unique UNIQUE (email)

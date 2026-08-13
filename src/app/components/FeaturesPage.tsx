@@ -25,8 +25,8 @@ function DecodeIcon({ size = 20 }: { size?: number }) {
 function FeatureLabel({ children, light }: { children: React.ReactNode; light?: boolean }) {
   return (
     <p
-      className="text-base sm:text-lg font-semibold uppercase tracking-[0.06em] mb-4"
-      style={{ color: light ? 'rgba(255,255,255,0.7)' : 'var(--decode-orange)' }}
+      className="text-xs sm:text-sm font-semibold uppercase tracking-[0.12em] mb-5"
+      style={{ color: light ? 'rgba(255,255,255,0.5)' : 'var(--decode-orange)' }}
     >
       {children}
     </p>
@@ -38,19 +38,19 @@ function FeatureLabel({ children, light }: { children: React.ReactNode; light?: 
 function FeatureMedia({ alt }: { alt: string }) {
   return (
     <div
-      className="w-full h-full min-h-[280px] sm:min-h-[340px] rounded-2xl flex items-center justify-center"
-      style={{ background: 'var(--decode-dark)', border: '1px solid rgba(255,255,255,0.06)' }}
+      className="w-full h-full min-h-[300px] sm:min-h-[380px] rounded-2xl flex items-center justify-center"
+      style={{ background: 'var(--decode-dark)', border: '1px solid rgba(255,255,255,0.08)' }}
       role="img"
       aria-label={alt}
     >
-      <div className="text-center px-6">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-4" style={{ background: 'var(--decode-orange)' }}>
-          <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      <div className="text-center px-8">
+        <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ background: 'rgba(242,101,34,0.12)', border: '1px solid rgba(242,101,34,0.2)' }}>
+          <svg className="w-6 h-6" style={{ color: 'var(--decode-orange)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.3)' }}>Product video coming soon</p>
+        <p className="text-xs font-medium uppercase tracking-[0.1em]" style={{ color: 'rgba(255,255,255,0.25)' }}>Preview coming soon</p>
       </div>
     </div>
   );
@@ -106,16 +106,16 @@ function ModeCapsule({ label, headline, description, mediaAlt, reversed }: ModeC
         style={{ padding: 0, overflow: 'hidden' }}
       >
         <div className={`flex flex-col ${reversed ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}>
-          <div className="flex-1 flex flex-col justify-center p-8 sm:p-10 lg:p-14">
+          <div className="flex-1 flex flex-col justify-center p-8 sm:p-12 lg:p-16">
             <FeatureLabel>{label}</FeatureLabel>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.02em] leading-tight mb-5" style={{ color: 'var(--decode-text)' }}>
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-[-0.03em] leading-[1.08] mb-6" style={{ color: 'var(--decode-text)' }}>
               {headline}
             </h2>
-            <p className="text-base leading-relaxed max-w-md" style={{ color: 'var(--decode-text-dim)' }}>
+            <p className="text-base sm:text-lg leading-relaxed max-w-md" style={{ color: 'var(--decode-text-dim)' }}>
               {description}
             </p>
           </div>
-          <div className="flex-1 p-4 sm:p-6 lg:p-8">
+          <div className="flex-1 p-5 sm:p-8 lg:p-10 flex items-center">
             <FeatureMedia alt={mediaAlt} />
           </div>
         </div>
@@ -142,12 +142,12 @@ function SessionModeCapsule() {
       >
         <div className="flex flex-col lg:flex-row">
           {/* Content */}
-          <div className="flex-1 flex flex-col justify-center p-8 sm:p-10 lg:p-14">
+          <div className="flex-1 flex flex-col justify-center p-8 sm:p-12 lg:p-16">
             <FeatureLabel>Session Mode</FeatureLabel>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.02em] leading-tight mb-5" style={{ color: 'var(--decode-text)' }}>
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-[-0.03em] leading-[1.08] mb-6" style={{ color: 'var(--decode-text)' }}>
               Understand beyond the file.
             </h2>
-            <p className="text-base leading-relaxed max-w-md mb-8" style={{ color: 'var(--decode-text-dim)' }}>
+            <p className="text-base sm:text-lg leading-relaxed max-w-md mb-10" style={{ color: 'var(--decode-text-dim)' }}>
               Open a project and let Decode understand the code around what you're investigating&nbsp;&mdash; so your questions don't have to start from scratch.
             </p>
 
@@ -157,7 +157,7 @@ function SessionModeCapsule() {
               style={{ background: 'rgba(0,0,0,0.04)', border: '1px solid var(--decode-border)' }}
             >
               <p
-                className="text-sm font-semibold uppercase tracking-[0.06em] mb-2"
+                className="text-xs font-semibold uppercase tracking-[0.12em] mb-2"
                 style={{ color: 'var(--decode-orange)' }}
               >
                 Project Intelligence
@@ -192,7 +192,7 @@ function SessionModeCapsule() {
           </div>
 
           {/* Media */}
-          <div className="flex-1 p-4 sm:p-6 lg:p-8">
+          <div className="flex-1 p-5 sm:p-8 lg:p-10 flex items-center">
             <FeatureMedia alt="Decode Session Mode — contextual project understanding" />
           </div>
         </div>
@@ -235,19 +235,19 @@ function Tier2Section() {
           style={{ padding: 0, overflow: 'hidden' }}
         >
           <div className="flex flex-col lg:flex-row">
-            <div className="lg:w-1/2 p-8 sm:p-10 lg:p-12 flex flex-col justify-center">
+            <div className="lg:w-1/2 p-8 sm:p-12 lg:p-14 flex flex-col justify-center">
               <FeatureLabel light>Follow-Up</FeatureLabel>
-              <h3 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] leading-tight text-white mb-4">
+              <h3 className="text-3xl sm:text-4xl font-bold tracking-[-0.03em] leading-[1.1] text-white mb-5">
                 Keep going.
               </h3>
-              <p className="text-base leading-relaxed mb-4" style={{ color: 'rgba(255,255,255,0.75)' }}>
+              <p className="text-base sm:text-lg leading-relaxed mb-4" style={{ color: 'rgba(255,255,255,0.75)' }}>
                 Ask the next question without starting over. Decode carries the relevant context forward so you can explore an idea instead of rebuilding it.
               </p>
-              <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
+              <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>
                 Reply to a specific part of an explanation and continue from there.
               </p>
             </div>
-            <div className="lg:w-1/2 p-4 sm:p-6 lg:p-8">
+            <div className="lg:w-1/2 p-5 sm:p-8 lg:p-10 flex items-center">
               <FeatureMedia alt="Decode Follow-Up — continue your investigation" />
             </div>
           </div>
@@ -262,16 +262,16 @@ function Tier2Section() {
           style={{ padding: 0, overflow: 'hidden' }}
         >
           <div className="flex flex-col lg:flex-row-reverse">
-            <div className="lg:w-1/2 p-8 sm:p-10 lg:p-12 flex flex-col justify-center">
+            <div className="lg:w-1/2 p-8 sm:p-12 lg:p-14 flex flex-col justify-center">
               <FeatureLabel>Virtual Session</FeatureLabel>
-              <h3 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] leading-tight text-white mb-4">
+              <h3 className="text-3xl sm:text-4xl font-bold tracking-[-0.03em] leading-[1.1] text-white mb-5">
                 Keep the investigation alive.
               </h3>
-              <p className="text-base leading-relaxed" style={{ color: 'var(--decode-text-on-dark-dim)' }}>
+              <p className="text-base sm:text-lg leading-relaxed" style={{ color: 'var(--decode-text-on-dark-dim)' }}>
                 Decode keeps the active investigation in memory as your questions evolve, so related questions build on what you've already explored.
               </p>
             </div>
-            <div className="lg:w-1/2 p-4 sm:p-6 lg:p-8">
+            <div className="lg:w-1/2 p-5 sm:p-8 lg:p-10 flex items-center">
               <FeatureMedia alt="Decode Virtual Session — persistent investigation context" />
             </div>
           </div>
@@ -286,16 +286,16 @@ function Tier2Section() {
           style={{ padding: 0, overflow: 'hidden' }}
         >
           <div className="flex flex-col lg:flex-row">
-            <div className="lg:w-1/2 p-8 sm:p-10 lg:p-12 flex flex-col justify-center">
+            <div className="lg:w-1/2 p-8 sm:p-12 lg:p-14 flex flex-col justify-center">
               <FeatureLabel>DSA</FeatureLabel>
-              <h3 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] leading-tight mb-4" style={{ color: 'var(--decode-text)' }}>
+              <h3 className="text-3xl sm:text-4xl font-bold tracking-[-0.03em] leading-[1.1] mb-5" style={{ color: 'var(--decode-text)' }}>
                 Understand the algorithm.
               </h3>
-              <p className="text-base leading-relaxed max-w-md" style={{ color: 'var(--decode-text-dim)' }}>
+              <p className="text-base sm:text-lg leading-relaxed max-w-md" style={{ color: 'var(--decode-text-dim)' }}>
                 Break down data structures and algorithms into clear, step-by-step explanations so you understand not just what the code does, but why it works.
               </p>
             </div>
-            <div className="lg:w-1/2 p-4 sm:p-6 lg:p-8">
+            <div className="lg:w-1/2 p-5 sm:p-8 lg:p-10 flex items-center">
               <FeatureMedia alt="Decode DSA — step-by-step algorithm explanations" />
             </div>
           </div>
@@ -323,7 +323,7 @@ function Tier2Section() {
               className="canvas canvas-warm p-8 sm:p-10 flex flex-col"
             >
               <FeatureLabel>{item.label}</FeatureLabel>
-              <h3 className="text-lg sm:text-xl font-bold tracking-[-0.02em] leading-tight mb-3" style={{ color: 'var(--decode-text)' }}>
+              <h3 className="text-xl sm:text-2xl font-bold tracking-[-0.025em] leading-tight mb-3" style={{ color: 'var(--decode-text)' }}>
                 {item.headline}
               </h3>
               <p className="text-sm leading-relaxed" style={{ color: 'var(--decode-text-dim)' }}>
@@ -360,7 +360,7 @@ function ContextSection() {
       >
         <div className="max-w-xl mb-10">
           <FeatureLabel>Context-Aware</FeatureLabel>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.02em] leading-tight text-white mb-4">
+          <h2 className="text-4xl sm:text-5xl font-bold tracking-[-0.03em] leading-[1.08] text-white mb-5">
             More than isolated snippets.
           </h2>
           <p className="text-base leading-relaxed" style={{ color: 'var(--decode-text-on-dark-dim)' }}>
@@ -424,7 +424,7 @@ function ProfileSection() {
       >
         <div className="max-w-xl mb-8">
           <FeatureLabel>Profile Intelligence</FeatureLabel>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] leading-tight mb-4" style={{ color: 'var(--decode-text)' }}>
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.03em] leading-[1.08] mb-5" style={{ color: 'var(--decode-text)' }}>
             Decode adapts to how you learn.
           </h2>
           <p className="text-base leading-relaxed" style={{ color: 'var(--decode-text-dim)' }}>
