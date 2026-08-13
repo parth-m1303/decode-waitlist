@@ -1,52 +1,54 @@
 import { useState } from 'react';
+import { Routes, Route } from 'react-router';
 import { Nav } from './components/Nav';
 import { HeroSection } from './components/HeroSection';
-import { ProblemSection } from './components/ProblemSection';
-import { InsightSection } from './components/InsightSection';
-import { ModesSection } from './components/ModesSection';
-import { DemoSection } from './components/DemoSection';
-import { WhySection } from './components/WhySection';
-import { IntegrationsSection } from './components/IntegrationsSection';
-import { WaitlistSection } from './components/WaitlistSection';
+import { BentoFeatures } from './components/BentoFeatures';
+import { ContextShowcase } from './components/ContextShowcase';
+import { WorkflowStrip } from './components/WorkflowStrip';
 import { FAQSection } from './components/FAQSection';
 import { FinalCTASection } from './components/FinalCTASection';
 import { FooterSection } from './components/FooterSection';
 import { WaitlistModal } from './components/WaitlistModal';
-import { VideoModal } from './components/VideoModal';
+import { FeaturesPage } from './components/FeaturesPage';
+
+function LandingPage({ onOpenWaitlist }: { onOpenWaitlist: () => void }) {
+  return (
+    <>
+      <HeroSection onOpenWaitlist={onOpenWaitlist} />
+      <BentoFeatures />
+      <ContextShowcase />
+      <WorkflowStrip onOpenWaitlist={onOpenWaitlist} />
+      <FAQSection />
+      <FinalCTASection onOpenWaitlist={onOpenWaitlist} />
+    </>
+  );
+}
 
 export default function App() {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
-  const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#080808] text-white selection:bg-[#FB923C]/30 selection:text-white font-sans noise-overlay">
+    <div className="min-h-screen font-sans">
       <Nav onOpenWaitlist={() => setIsWaitlistOpen(true)} />
-      
+
       <main>
-        <HeroSection 
-          onOpenWaitlist={() => setIsWaitlistOpen(true)}
-          onOpenVideo={() => setIsVideoOpen(true)}
-        />
-        <ProblemSection />
-        <InsightSection />
-        <ModesSection />
-        <DemoSection />
-        <WhySection />
-        <IntegrationsSection />
-        <WaitlistSection onOpenWaitlist={() => setIsWaitlistOpen(true)} />
-        <FAQSection />
-        <FinalCTASection onOpenWaitlist={() => setIsWaitlistOpen(true)} />
+        <Routes>
+          <Route
+            path="/"
+            element={<LandingPage onOpenWaitlist={() => setIsWaitlistOpen(true)} />}
+          />
+          <Route
+            path="/features"
+            element={<FeaturesPage onOpenWaitlist={() => setIsWaitlistOpen(true)} />}
+          />
+        </Routes>
       </main>
 
-      <FooterSection />
+      <FooterSection onOpenWaitlist={() => setIsWaitlistOpen(true)} />
 
-      <WaitlistModal 
-        isOpen={isWaitlistOpen} 
-        onClose={() => setIsWaitlistOpen(false)} 
-      />
-      <VideoModal 
-        isOpen={isVideoOpen} 
-        onClose={() => setIsVideoOpen(false)} 
+      <WaitlistModal
+        isOpen={isWaitlistOpen}
+        onClose={() => setIsWaitlistOpen(false)}
       />
     </div>
   );

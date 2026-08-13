@@ -8,6 +8,7 @@ import {
   searchWaitlistEntries,
   getWaitlistCount,
   getStats,
+  createBackup,
 } from './db.js';
 
 const app = express();
@@ -186,6 +187,12 @@ app.get('/admin/export.csv', requireAuth, (req, res) => {
   res.setHeader('Content-Type', 'text/csv');
   res.setHeader('Content-Disposition', 'attachment; filename="waitlist.csv"');
   res.send(csv);
+});
+
+// ─── Admin: Manual Backup ────────────────────────────────────────────────────
+app.post('/admin/backup', requireAuth, async (req, res) => {
+  const result = await createBackup();
+  res.json(result);
 });
 
 // ─── Admin: Main page ─────────────────────────────────────────────────────────
@@ -470,6 +477,7 @@ function adminPageHTML(stats, entries) {
       </div>
       <div class="actions">
         <input type="search" class="search-input" id="search" placeholder="Search by name or email…" />
+        <button id="backup-btn" class="btn btn-ghost" onclick="createBackup()">Create Backup</button>
         <a href="/admin/export.csv" class="btn btn-primary">⬇ Export CSV</a>
         <a href="/admin/logout" class="btn btn-ghost">Sign Out</a>
       </div>
@@ -526,6 +534,28 @@ function adminPageHTML(stats, entries) {
           noResults.style.display = visible === 0 ? 'block' : 'none';
         }
       });
+    }
+
+    async function createBackup() {
+      const btn = document.getElementById('backup-btn');
+      const originalText = btn.innerText;
+      btn.innerText = 'Creating...';
+      btn.disabled = true;
+      try {
+        const res = await fetch('/admin/backup', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          btn.innerText = '✅ Backup Created';
+        } else {
+          btn.innerText = '❌ Failed';
+        }
+      } catch (err) {
+        btn.innerText = '❌ Error';
+      }
+      setTimeout(() => {
+        btn.innerText = originalText;
+        btn.disabled = false;
+      }, 3000);
     }
   </script>
 </body>

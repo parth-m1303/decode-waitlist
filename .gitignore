@@ -1,3 +1,5 @@
 waitlist.db
 .env
+decode-backend/.env
+backups/
 node_modules

@@ -1,194 +1,148 @@
-import { motion, useInView, animate, AnimatePresence } from 'motion/react';
-import { useRef, useEffect, useState } from 'react';
-import { Sparkles } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { useEffect, useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 
 interface HeroSectionProps {
   onOpenWaitlist: () => void;
-  onOpenVideo: () => void;
 }
 
-const TOOLS = ['VS Code', 'Cursor', 'Xcode', 'Chrome', 'Safari', 'Terminal'];
-
 const CODE_LINES = [
-  { text: 'async function processOAuthCallback(code: string) {', type: 'fn' },
-  { text: '  const tokens = await exchangeCodeForTokens(code);', type: 'normal' },
-  { text: '  const { sub, email } = await decodeIdToken(tokens.id_token);', type: 'normal' },
-  { text: '  const user = await upsertUser({ sub, email, tokens });', type: 'normal' },
-  { text: '  return signSession(user.id, { rotate: true });', type: 'highlight' },
-  { text: '}', type: 'fn' },
+  { text: 'async function processOAuthCallback(code: string) {', kind: 'keyword' },
+  { text: '  const tokens = await exchangeCodeForTokens(code);', kind: 'normal' },
+  { text: '  const { sub, email } = await decodeIdToken(tokens.id_token);', kind: 'normal' },
+  { text: '  const user = await upsertUser({ sub, email, tokens });', kind: 'normal' },
+  { text: '  return signSession(user.id, { rotate: true });', kind: 'highlight' },
+  { text: '}', kind: 'keyword' },
 ];
 
 const EXPLANATION_CHUNKS = [
   'This function handles the OAuth 2.0 callback flow. ',
   'It exchanges the authorization code for access and ID tokens, ',
-  'then decodes the JWT identity token to get user info (sub = user ID). ',
-  'It upserts the user record (creates or updates) and creates a signed session. ',
-  'The rotate: true flag rotates the session key on login for security.',
+  'decodes the JWT to extract user identity (sub, email), ',
+  'upserts the user record, and creates a signed session. ',
+  'The rotate: true flag rotates the session key for security.',
 ];
 
-export function HeroSection({ onOpenWaitlist, onOpenVideo }: HeroSectionProps) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-  const [animStep, setAnimStep] = useState(0);
+export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
+  const [step, setStep] = useState(0);
   const [explanation, setExplanation] = useState('');
   const [chunkIdx, setChunkIdx] = useState(0);
 
-  // Loop animation: 0=idle, 1=highlight, 2=panel appears, 3=streaming, 4=done
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = [];
     const loop = () => {
-      setAnimStep(0);
-      setExplanation('');
-      setChunkIdx(0);
-      timers.push(setTimeout(() => setAnimStep(1), 800));
-      timers.push(setTimeout(() => setAnimStep(2), 1800));
-      timers.push(setTimeout(() => setAnimStep(3), 2200));
+      setStep(0); setExplanation(''); setChunkIdx(0);
+      timers.push(setTimeout(() => setStep(1), 600));
+      timers.push(setTimeout(() => setStep(2), 1400));
+      timers.push(setTimeout(() => setStep(3), 1800));
     };
     loop();
-    const interval = setInterval(loop, 9000);
+    const interval = setInterval(loop, 14000);
     return () => { timers.forEach(clearTimeout); clearInterval(interval); };
   }, []);
 
   useEffect(() => {
-    if (animStep !== 3) return;
-    if (chunkIdx >= EXPLANATION_CHUNKS.length) { setAnimStep(4); return; }
+    if (step !== 3) return;
+    if (chunkIdx >= EXPLANATION_CHUNKS.length) { setStep(4); return; }
     const t = setTimeout(() => {
       setExplanation(prev => prev + EXPLANATION_CHUNKS[chunkIdx]);
       setChunkIdx(i => i + 1);
-    }, chunkIdx === 0 ? 300 : 600);
+    }, chunkIdx === 0 ? 250 : 450);
     return () => clearTimeout(t);
-  }, [animStep, chunkIdx]);
+  }, [step, chunkIdx]);
 
   return (
-    <section ref={ref} className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-24 pb-16 px-6">
-      {/* Ambient glows */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-gradient-radial from-[#FB923C]/12 via-[#FBBF24]/6 to-transparent rounded-full blur-3xl" />
-        <div className="absolute top-1/3 -left-32 w-[600px] h-[600px] bg-gradient-radial from-[#F472B6]/8 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-gradient-radial from-[#FBBF24]/6 to-transparent rounded-full blur-3xl" />
-      </div>
+    <section className="pt-28 pb-8 px-6 sm:px-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Headline area */}
+        <div className="max-w-3xl mb-16">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.25rem] font-bold tracking-[-0.035em] leading-[1.05] mb-6"
+            style={{ color: 'var(--decode-text)' }}
+          >
+            Understand code in context.
+          </motion.h1>
 
-      {/* Content */}
-      <div className="relative z-10 max-w-6xl mx-auto w-full">
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex justify-center mb-8"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-white/10">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#FB923C] animate-pulse" />
-            <span className="text-xs font-semibold text-white/60 uppercase tracking-widest">macOS App • Private Alpha</span>
-          </div>
-        </motion.div>
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="text-lg sm:text-xl leading-relaxed mb-4 max-w-xl"
+            style={{ color: 'var(--decode-text-muted)' }}
+          >
+            Decode understands the code around you, so you can understand unfamiliar software without leaving your workflow.
+          </motion.p>
 
-        {/* Headline */}
-        <div className="text-center mb-8">
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight leading-[1.04] text-white mb-0"
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-sm sm:text-base leading-relaxed mb-8 max-w-xl"
+            style={{ color: 'var(--decode-text-faint)' }}
           >
-            Understand code.
-          </motion.h1>
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
+            No tab switching. No copy-pasting. No breaking your flow.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight leading-[1.04] gradient-text"
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="flex flex-wrap items-center gap-4"
           >
-            Without leaving
-          </motion.h1>
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight leading-[1.04] text-white"
-          >
-            your workflow.
-          </motion.h1>
+            <button onClick={onOpenWaitlist} className="btn-primary text-base py-3.5 px-7">
+              <span>Join the Alpha</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <span className="text-sm" style={{ color: 'var(--decode-text-faint)' }}>
+              Free &middot; macOS &amp; Windows &middot; No credit card
+            </span>
+          </motion.div>
         </div>
 
-        {/* Subheadline */}
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-center text-lg sm:text-xl text-white/50 max-w-xl mx-auto mb-10 leading-relaxed"
-        >
-          Decode explains unfamiliar code directly on your screen so you never have to stop, switch tabs, and lose your train of thought.
-        </motion.p>
-
-        {/* CTAs */}
+        {/* Product canvas — the visual hero */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-20"
+          transition={{ duration: 0.9, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="canvas canvas-dark"
+          style={{ padding: '2rem 2rem 0 2rem' }}
         >
-          <button
-            onClick={onOpenWaitlist}
-            className="group relative px-7 py-3.5 rounded-2xl text-base font-semibold text-white overflow-hidden shadow-2xl shadow-[#FB923C]/20 hover:shadow-[#FB923C]/40 transition-all hover:scale-[1.03]"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-[#FB923C] via-[#FBBF24] to-[#F472B6]" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#FB923C] via-[#FBBF24] to-[#F472B6] blur-xl opacity-50 group-hover:opacity-70 transition-opacity" />
-            <span className="relative z-10">Join Waitlist</span>
-          </button>
-          <button
-            onClick={onOpenVideo}
-            className="group px-7 py-3.5 rounded-2xl text-base font-medium text-white/70 hover:text-white glass border border-white/8 hover:border-white/15 transition-all hover:scale-[1.03] flex items-center gap-2"
-          >
-            <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-              <div className="w-0 h-0 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[7px] border-l-white/70 ml-0.5" />
-            </div>
-            Watch 20 Second Demo
-          </button>
-        </motion.div>
-
-        {/* macOS Mockup */}
-        <motion.div
-          initial={{ opacity: 0, y: 48 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="relative max-w-4xl mx-auto"
-        >
-          {/* Glow under mockup */}
-          <div className="absolute -inset-4 bg-gradient-to-r from-[#FB923C]/15 via-[#FBBF24]/10 to-[#F472B6]/15 rounded-3xl blur-3xl" />
-
-          {/* macOS window */}
-          <div className="relative rounded-2xl overflow-hidden border border-white/8 shadow-2xl" style={{ background: '#161616' }}>
-            {/* Window title bar */}
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5" style={{ background: '#1c1c1c' }}>
-              <div className="w-3 h-3 rounded-full bg-[#FF5F56]" />
-              <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
-              <div className="w-3 h-3 rounded-full bg-[#27C93F]" />
-              <span className="ml-3 text-xs text-white/30 font-mono">auth.service.ts — VS Code</span>
+          <div className="mac-window" style={{ borderRadius: '12px 12px 0 0', boxShadow: 'none' }}>
+            <div className="mac-window-bar">
+              <div className="mac-dot mac-dot-red" />
+              <div className="mac-dot mac-dot-yellow" />
+              <div className="mac-dot mac-dot-green" />
+              <span className="ml-4 text-xs font-mono text-white/25">auth.service.ts — VS Code</span>
             </div>
 
-            {/* Content: editor + panel */}
-            <div className="flex min-h-[340px] relative">
-              {/* Editor left */}
+            <div className="flex flex-col md:flex-row" style={{ minHeight: 340 }}>
+              {/* Editor pane */}
               <div className="flex-1 p-6 font-mono text-sm leading-7 overflow-hidden">
-                {/* Sidebar line numbers */}
-                <div className="flex gap-5">
-                  <div className="flex flex-col text-right text-white/20 text-xs leading-7 select-none min-w-[20px]">
+                <div className="flex gap-4">
+                  <div className="flex flex-col text-right text-xs leading-7 select-none min-w-[20px] text-white/15">
                     {CODE_LINES.map((_, i) => <span key={i}>{i + 1}</span>)}
                   </div>
-                  <div className="flex-1 overflow-hidden">
+                  <div className="flex-1">
                     {CODE_LINES.map((line, i) => (
                       <div
                         key={i}
-                        className={`relative px-1.5 rounded transition-all duration-500 ${
-                          line.type === 'highlight' && animStep >= 1
-                            ? 'bg-[#FBBF24]/15 border border-[#FBBF24]/30'
-                            : ''
-                        }`}
+                        className="px-2 rounded transition-all duration-500"
+                        style={line.kind === 'highlight' && step >= 1 ? {
+                          background: 'rgba(242, 101, 34, 0.10)',
+                          borderLeft: '2px solid rgba(242, 101, 34, 0.6)',
+                          marginLeft: '-2px',
+                        } : undefined}
                       >
-                        <span className={
-                          line.type === 'fn' ? 'text-[#FB923C]' : 'text-white/70'
-                        }>
+                        <span style={{
+                          color: line.kind === 'keyword'
+                            ? '#C792EA'
+                            : line.kind === 'highlight' && step >= 1
+                              ? '#E0E0E0'
+                              : 'rgba(255,255,255,0.35)',
+                        }}>
                           {line.text}
                         </span>
                       </div>
@@ -197,50 +151,39 @@ export function HeroSection({ onOpenWaitlist, onOpenVideo }: HeroSectionProps) {
                 </div>
               </div>
 
-              {/* Decode panel right */}
+              {/* Decode explanation panel */}
               <AnimatePresence>
-                {animStep >= 2 && (
+                {step >= 2 && (
                   <motion.div
-                    initial={{ opacity: 0, x: 20, scale: 0.97 }}
-                    animate={{ opacity: 1, x: 0, scale: 1 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                    className="w-72 border-l border-white/5 p-5 flex flex-col gap-4"
-                    style={{ background: '#111111' }}
+                    initial={{ opacity: 0, width: 0 }}
+                    animate={{ opacity: 1, width: 320 }}
+                    exit={{ opacity: 0, width: 0 }}
+                    transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                    className="overflow-hidden flex flex-col gap-4 p-5"
+                    style={{
+                      borderLeft: '1px solid rgba(255,255,255,0.06)',
+                      background: 'rgba(255,255,255,0.02)',
+                    }}
                   >
-                    {/* Panel header */}
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#FB923C] to-[#F472B6] flex items-center justify-center shadow-lg shadow-[#FB923C]/20">
-                        <Sparkles className="w-3 h-3 text-white" />
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'var(--decode-orange)' }}>
+                        <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
                       </div>
-                      <span className="text-xs font-semibold text-white/60">Decode</span>
-                      {animStep === 3 && (
-                        <div className="ml-auto flex items-center gap-1">
-                          <div className="w-1 h-1 rounded-full bg-[#FB923C] animate-pulse" />
-                          <span className="text-[10px] text-white/30">analyzing</span>
-                        </div>
-                      )}
+                      <span className="text-sm font-semibold text-white/80">Decode</span>
+                      {step === 3 && <span className="ml-auto text-[11px] text-white/30">analyzing...</span>}
                     </div>
 
-                    {/* Explanation */}
-                    <div className="text-xs text-white/60 leading-5 flex-1">
+                    <div className="text-[13px] leading-6 text-white/50 flex-1">
                       {explanation}
-                      {animStep === 3 && chunkIdx < EXPLANATION_CHUNKS.length && (
-                        <span className="cursor-blink" />
-                      )}
+                      {step === 3 && chunkIdx < EXPLANATION_CHUNKS.length && <span className="cursor-blink" />}
                     </div>
 
-                    {/* Chips */}
-                    {animStep === 4 && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="flex flex-wrap gap-1.5 pt-2 border-t border-white/5"
-                      >
+                    {step === 4 && (
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-wrap gap-1.5 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                         {['OAuth 2.0', 'JWT', 'Session', 'Security'].map(t => (
-                          <span key={t} className="px-2 py-0.5 rounded-full text-[10px] bg-white/5 text-white/40 border border-white/8">
-                            {t}
-                          </span>
+                          <span key={t} className="px-2.5 py-1 rounded-md text-[11px] font-medium text-white/35" style={{ background: 'rgba(255,255,255,0.05)' }}>{t}</span>
                         ))}
                       </motion.div>
                     )}
@@ -255,17 +198,13 @@ export function HeroSection({ onOpenWaitlist, onOpenVideo }: HeroSectionProps) {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 1.0 }}
-          className="mt-16 text-center"
+          transition={{ delay: 1.0 }}
+          className="flex flex-wrap items-center justify-center gap-3 mt-8"
         >
-          <p className="text-xs font-semibold text-white/25 uppercase tracking-widest mb-5">Works with</p>
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8">
-            {TOOLS.map((t) => (
-              <span key={t} className="text-sm font-medium text-white/30 hover:text-white/60 transition-colors cursor-default">
-                {t}
-              </span>
-            ))}
-          </div>
+          <span className="text-xs font-medium uppercase tracking-[0.1em] mr-2" style={{ color: 'var(--decode-text-faint)' }}>Works with</span>
+          {['VS Code', 'Cursor', 'Xcode', 'Chrome', 'Terminal', 'PDFs'].map(t => (
+            <span key={t} className="text-xs font-medium" style={{ color: 'var(--decode-text-muted)' }}>{t}</span>
+          ))}
         </motion.div>
       </div>
     </section>

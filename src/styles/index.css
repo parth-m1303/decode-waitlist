@@ -1,7 +1,59 @@
-/* Decode — global dark theme */
+/* Decode — Editorial design system
+   Colors derived from Replit reference:
+   - Background: hsl(46,10%,98%) → #FAFAF7
+   - Surface: hsl(46,10%,96%) → #F5F3EF
+   - Surface high: hsl(46,10%,92%) → #ECEBE5
+   - Border: hsl(46,10%,84%) → #D9D6CE
+   - Text: hsl(222,5%,7.8%) → #131416
+   - Text dim: hsl(222,5%,22%) → #363638
+   - Text muted: hsl(222,5%,35%) → #585559
+   - Orange accent: #F26522 (Decode brand, near Replit's #EC4E02)
+   - Peach: #FFDCC8 (orange tint for large surfaces)
+   - Dark: #131416
+*/
 @import './fonts.css';
 @import './tailwind.css';
 
+/* ─── Design Tokens ─────────────────────────────────────────────────────────── */
+:root {
+  /* Page backgrounds */
+  --decode-bg: #FAFAF7;
+  --decode-surface: #F5F3EF;
+  --decode-surface-high: #ECEBE5;
+  --decode-white: #FFFFFF;
+
+  /* Large canvas surfaces */
+  --decode-peach: #FFDCC8;
+  --decode-peach-deep: #FFB088;
+  --decode-warm-gray: #ECEBE5;
+  --decode-dark: #131416;
+  --decode-dark-surface: #1E1E2E;
+  --decode-orange: #F26522;
+  --decode-orange-light: #FF8B5E;
+
+  /* Text */
+  --decode-text: #131416;
+  --decode-text-dim: #363638;
+  --decode-text-muted: #585559;
+  --decode-text-faint: #9B9894;
+  --decode-text-on-dark: #FFFFFF;
+  --decode-text-on-dark-dim: rgba(255, 255, 255, 0.65);
+  --decode-text-on-dark-muted: rgba(255, 255, 255, 0.4);
+  --decode-text-on-orange: #FFFFFF;
+
+  /* Borders */
+  --decode-border: #D9D6CE;
+  --decode-border-subtle: rgba(0, 0, 0, 0.05);
+
+  /* Radius */
+  --decode-radius-sm: 8px;
+  --decode-radius-md: 12px;
+  --decode-radius-lg: 16px;
+  --decode-radius-xl: 24px;
+  --decode-radius-2xl: 32px;
+}
+
+/* ─── Reset & Base ──────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
@@ -11,93 +63,127 @@ html {
 }
 
 body {
-  background: #080808;
-  color: #f0f0f0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--decode-bg);
+  color: var(--decode-text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   overflow-x: hidden;
+  line-height: 1.6;
 }
 
-/* Scrollbar */
+/* ─── Scrollbar ─────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #0d0d0d; }
-::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 3px; }
+::-webkit-scrollbar-track { background: var(--decode-bg); }
+::-webkit-scrollbar-thumb { background: var(--decode-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--decode-surface-high); }
 
-/* Selection */
-::selection { background: rgba(251,146,60,0.25); color: #fff; }
+::selection { background: rgba(242, 101, 34, 0.15); color: var(--decode-text); }
 
-/* Smooth anchor offset for fixed nav */
 [id] { scroll-margin-top: 80px; }
 
-@keyframes stream-in {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
+/* ─── Keyframes ─────────────────────────────────────────────────────────────── */
 @keyframes cursor-blink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
-}
-
-@keyframes gradient-shift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-8px); }
-}
-
-.gradient-text {
-  background: linear-gradient(135deg, #FB923C 0%, #FBBF24 40%, #F472B6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.gradient-border {
-  background: linear-gradient(135deg, #FB923C, #FBBF24, #F472B6);
-  padding: 1px;
-  border-radius: inherit;
-}
-
-.glass {
-  background: rgba(255,255,255,0.04);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.08);
-}
-
-.glass-strong {
-  background: rgba(255,255,255,0.07);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255,255,255,0.10);
-}
-
-.noise-overlay::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  opacity: 0.03;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
-  z-index: 9999;
-}
-
-.streaming-text span {
-  opacity: 0;
-  animation: stream-in 0.3s ease forwards;
 }
 
 .cursor-blink {
   display: inline-block;
   width: 2px;
   height: 1em;
-  background: #FB923C;
+  background: var(--decode-orange);
   animation: cursor-blink 0.8s ease infinite;
   vertical-align: text-bottom;
   margin-left: 1px;
+}
+
+/* ─── Buttons ───────────────────────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  border-radius: var(--decode-radius-md);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--decode-text-on-orange);
+  background: var(--decode-orange);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.btn-primary:hover {
+  background: #DA5A1E;
+  transform: translateY(-1px);
+}
+
+.btn-primary > * {
+  position: relative;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  border-radius: var(--decode-radius-md);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  color: var(--decode-text);
+  background: transparent;
+  border: 1px solid var(--decode-border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  border-color: var(--decode-text-muted);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+/* ─── Mac Window (dark code mockup) ─────────────────────────────────────────── */
+.mac-window {
+  border-radius: var(--decode-radius-lg);
+  overflow: hidden;
+  background: var(--decode-dark-surface);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+}
+
+.mac-window-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.mac-dot { width: 12px; height: 12px; border-radius: 50%; }
+.mac-dot-red { background: #FF5F56; }
+.mac-dot-yellow { background: #FFBD2E; }
+.mac-dot-green { background: #27C93F; }
+
+/* ─── Canvas (large colored visual surfaces) ────────────────────────────────── */
+.canvas {
+  border-radius: var(--decode-radius-2xl);
+  overflow: hidden;
+  position: relative;
+}
+
+.canvas-peach { background: var(--decode-peach); }
+.canvas-warm  { background: var(--decode-warm-gray); }
+.canvas-dark  { background: var(--decode-dark); color: var(--decode-text-on-dark); }
+.canvas-orange { background: var(--decode-orange); color: var(--decode-text-on-orange); }
+
+/* ─── Bento Grid ────────────────────────────────────────────────────────────── */
+.bento-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,5 +1,6 @@
 import Database from 'better-sqlite3';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -73,6 +74,50 @@ const getStatsQuery = db.prepare(`
 `);
 
 // ─── Exported helpers ─────────────────────────────────────────────────────────
+
+/**
+ * Creates a safe backup of the running database into the backups directory.
+ * Keeps only the 30 most recent backups.
+ */
+export async function createBackup() {
+  const backupsDir = path.resolve(__dirname, '..', 'backups');
+  if (!fs.existsSync(backupsDir)) {
+    fs.mkdirSync(backupsDir, { recursive: true });
+  }
+
+  const dateStr = new Date().toISOString().split('T')[0];
+  // append timestamp to allow multiple backups per day if triggered manually
+  const timeStr = new Date().toISOString().split('T')[1].replace(/:/g, '-').split('.')[0];
+  const backupFilename = `waitlist-${dateStr}-${timeStr}.db`;
+  const backupPath = path.join(backupsDir, backupFilename);
+
+  try {
+    // db.backup is the safe way to copy a SQLite DB while in use
+    await db.backup(backupPath);
+    console.log(`✅ Database backup created: ${backupFilename}`);
+
+    // Prune old backups (keep last 30)
+    const files = fs.readdirSync(backupsDir)
+      .filter(f => f.startsWith('waitlist-') && f.endsWith('.db'))
+      .map(f => ({ name: f, time: fs.statSync(path.join(backupsDir, f)).mtime.getTime() }))
+      .sort((a, b) => b.time - a.time); // newest first
+
+    if (files.length > 30) {
+      const toDelete = files.slice(30);
+      for (const file of toDelete) {
+        fs.unlinkSync(path.join(backupsDir, file.name));
+        console.log(`🗑️ Deleted old backup: ${file.name}`);
+      }
+    }
+    return { success: true, message: `Backup created: ${backupFilename}` };
+  } catch (err) {
+    console.error('Backup failed:', err);
+    return { success: false, message: 'Backup failed.' };
+  }
+}
+
+// Automatically create a backup on startup
+createBackup().catch(console.error);
 
 /**
  * Insert a new waitlist entry.
