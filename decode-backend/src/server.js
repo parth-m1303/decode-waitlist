@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const helmet = require("helmet");
 
@@ -10,6 +11,9 @@ const adminRoutes = require("./routes/admin");
 const app = express();
 
 const PORT = process.env.PORT || 10000;
+
+// Path to the built Vite frontend (repo root / dist)
+const DIST_DIR = path.resolve(__dirname, "../../dist");
 
 
 // ==========================================
@@ -52,19 +56,13 @@ app.use(express.urlencoded({ extended: false, limit: "10kb" }));
 
 
 // ==========================================
-// HEALTH
+// API HEALTH
 // ==========================================
 
-app.get("/", (req, res) => {
+app.get("/api/health", (req, res) => {
   res.json({
     name: "Decode API",
     status: "running",
-  });
-});
-
-app.get("/health", (req, res) => {
-  res.json({
-    status: "ok",
   });
 });
 
@@ -79,14 +77,31 @@ app.use("/api/admin", adminRoutes);
 
 
 // ==========================================
-// 404
+// API 404 (only for /api/* requests)
 // ==========================================
 
-app.use((req, res) => {
+app.all("/api/{*path}", (req, res) => {
   res.status(404).json({
     success: false,
     error: "Route not found.",
   });
+});
+
+
+// ==========================================
+// STATIC FRONTEND (Vite build output)
+// ==========================================
+
+app.use(express.static(DIST_DIR));
+
+
+// ==========================================
+// SPA FALLBACK (serves index.html for
+// client-side routes like /features)
+// ==========================================
+
+app.get("{*path}", (req, res) => {
+  res.sendFile(path.join(DIST_DIR, "index.html"));
 });
 
 
